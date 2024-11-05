@@ -25,7 +25,7 @@ func TestOutPaintFile(t *testing.T) {
 
 func TestOutPaintDir(t *testing.T) {
 	dirPath := "/Users/parapeng/Downloads/pinterest"
-	client := newProxyClientByUrl("http://127.0.0.1:8888")
+	client := NewProxyClientByUrl("http://127.0.0.1:8888")
 	err := OutPaintDir(client, dirPath)
 	if err != nil {
 		log.Printf("%v\n", err)

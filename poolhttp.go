@@ -55,7 +55,7 @@ func (p *ClientPool) Get() *http.Client {
 func (p *ClientPool) Put(client *http.Client) {
 	p.clients <- client
 }
-func newProxyClientByUrl(porxyUrl string) *http.Client {
+func NewProxyClientByUrl(porxyUrl string) *http.Client {
 	validURLs := checkProxyURLs([]string{porxyUrl})
 	if len(validURLs) < 1 {
 		return nil

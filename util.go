@@ -1,11 +1,13 @@
 package pixelcut
 
 import (
+	"fmt"
 	"image"
 	"image/jpeg"
 	_ "image/jpeg"
 	"image/png"
 	_ "image/png"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -52,12 +54,16 @@ func CreatDir(saveDir string) error {
 }
 func GetAllFilesByExts(dirPth string, exts []string) ([]string, error) {
 	var files []string
+	skipOutpaint := true
+	if filepath.Base(dirPth) == saveDirName {
+		skipOutpaint = false
+	}
 	err := filepath.WalkDir(dirPth, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		//不进行递归
-		if d.IsDir() && d.Name() == saveDirName {
+		if d.IsDir() && d.Name() == saveDirName && skipOutpaint {
 			return filepath.SkipDir
 		}
 
@@ -121,6 +127,30 @@ func Png2Jpg(inputFile, outputFile string) error {
 	err = jpeg.Encode(outFile, img, &jpeg.Options{Quality: 95})
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func CopyFile(src, dst string) error {
+	// 打开源文件
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("无法打开源文件: %v", err)
+	}
+	defer srcFile.Close()
+
+	// 创建目标文件
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return fmt.Errorf("无法创建目标文件: %v", err)
+	}
+	defer dstFile.Close()
+
+	// 使用 io.Copy 复制文件内容
+	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return fmt.Errorf("复制文件时出错: %v", err)
 	}
 
 	return nil
