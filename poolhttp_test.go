@@ -32,7 +32,7 @@ func GetIP(pool *ClientPool) error {
 func TestPoolHttp(t *testing.T) {
 	proxies := []string{}
 	for i := 0; i < 6; i++ {
-		proxies = append(proxies, fmt.Sprintf("http://127.0.0.1:%d", i+7000))
+		proxies = append(proxies, fmt.Sprintf("http://127.0.0.1:%d", 7897))
 	}
 
 	var wg sync.WaitGroup
