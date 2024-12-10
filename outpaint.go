@@ -17,10 +17,9 @@ import (
 
 const saveDirName = "outpaint"
 const creativity = .0
+const OUTPAINT_APIURL = "https://api2.pixelcut.app/image/outpaint/v1"
 
-// https://directory.cookieyes.com/api/v1/ip
-const APIURL = "https://api2.pixelcut.app/image/outpaint/v1"
-
+// 处理非jpg图片,跳过已经处理的图片
 func PreDo(dirPath string) (map[string]string, error) {
 	saveDir := filepath.Join(dirPath, saveDirName)
 	err := CreatDir(saveDir)
@@ -47,7 +46,6 @@ func PreDo(dirPath string) (map[string]string, error) {
 	}
 	return ret, nil
 }
-
 func OutPaintDir(client *http.Client, dirPath string) error {
 	remainFiles, err := PreDo(dirPath)
 	if err != nil {
@@ -65,7 +63,7 @@ func OutPaintDir(client *http.Client, dirPath string) error {
 	}
 	return nil
 }
-func OutPaintDirByPool(dirPath string, clientPool *ClientPool) error {
+func OutPaintDirByPool(clientPool *ClientPool, dirPath string) error {
 	remainFiles, err := PreDo(dirPath)
 	if err != nil {
 		return err
@@ -92,17 +90,15 @@ func OutPaintDirByPool(dirPath string, clientPool *ClientPool) error {
 	wg.Wait()
 	return nil
 }
-
 func OutPaintFile(client *http.Client, filePath, savePath string) error {
 	top, left := Calculate(filePath, 16, 9)
-	err := PostData(client, filePath, savePath, left, top, left, top, creativity)
+	err := OutPaintPostData(client, filePath, savePath, left, top, left, top, creativity)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-
-func PostData(client *http.Client, filePath, savePath string, left, top, right, bottom int, creativity float64) error {
+func OutPaintPostData(client *http.Client, filePath, savePath string, left, top, right, bottom int, creativity float64) error {
 	if top+left+right+bottom == 0 {
 		return errors.New("top = left = 0")
 	}
@@ -139,7 +135,7 @@ func PostData(client *http.Client, filePath, savePath string, left, top, right, 
 	writer.Close()
 
 	// 创建 HTTP 请求
-	req, err := http.NewRequest("POST", APIURL, body)
+	req, err := http.NewRequest("POST", OUTPAINT_APIURL, body)
 	if err != nil {
 		return err
 	}

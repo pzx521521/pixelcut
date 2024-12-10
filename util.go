@@ -155,3 +155,17 @@ func CopyFile(src, dst string) error {
 
 	return nil
 }
+func filterFile(dirPath string) []string {
+	files, _ := GetAllFilesByExts(dirPath, []string{".jpg", ".jpeg"})
+	ret := []string{}
+	for _, file := range files {
+		config, err := DecodeConfig(file)
+		if err != nil {
+			continue
+		}
+		if config.Width < 2000 && config.Height < 1000 {
+			ret = append(ret, file)
+		}
+	}
+	return ret
+}

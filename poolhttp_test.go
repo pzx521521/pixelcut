@@ -30,13 +30,9 @@ func GetIP(pool *ClientPool) error {
 	return nil
 }
 func TestPoolHttp(t *testing.T) {
-	proxies := []string{}
-	for i := 0; i < 6; i++ {
-		proxies = append(proxies, fmt.Sprintf("http://127.0.0.1:%d", 7897))
-	}
-
+	proxies := []string{"http://127.0.0.1:8888"}
 	var wg sync.WaitGroup
-	pool := NewClientPool(proxies, 2)
+	pool := NewClientPool(proxies, 5)
 	for i := 0; i < 20; i++ {
 		wg.Add(1)
 		go func() {

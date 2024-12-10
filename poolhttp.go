@@ -37,9 +37,7 @@ func NewClientPool(proxyURLs []string, batchSize int) *ClientPool {
 	for i := 0; i < batchSize; i++ {
 		for j := 0; j < len(validURLs); j++ {
 			client, _ := newProxyClient(validURLs[j])
-			if i == 0 {
-				pool.AddURL(client, validURLs[j])
-			}
+			pool.AddURL(client, validURLs[j])
 			pool.clients <- client
 		}
 	}

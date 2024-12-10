@@ -72,7 +72,7 @@ func main() {
 	}
 	//每个ip进行几个并发 这里没有做并发
 	pool := pixelcut.NewClientPool(proxies, 1)
-	err := pixelcut.OutPaintDirByPool(dirPath, pool)
+	err := pixelcut.OutPaintDirByPool(pool, dirPath)
 	if err != nil {
 		log.Printf("%v\n", err)
 		return
