@@ -1,7 +1,6 @@
 package pixelcut
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -32,9 +31,19 @@ func TestOutPaintDir(t *testing.T) {
 		return
 	}
 }
-func TestOutPaintDirWithPoolCharles(t *testing.T) {
-	dirPath := "/Users/parapeng/Downloads/wait"
-	proxies := []string{"http://127.0.0.1:8888"}
+func TestUpscalerFile(t *testing.T) {
+	files := filterFile("/Users/parapeng/Downloads/outpaint")
+	client := NewProxyClientByUrl("http://127.0.0.1:7897")
+	newFiles := files[:1]
+	err := UpscalerFiles(client, newFiles)
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+}
+
+func TestOutPaintDirWithPool(t *testing.T) {
+	dirPath := "/Users/parapeng/Downloads"
+	proxies := []string{"http://127.0.0.1:7897"}
 	pool := NewClientPool(proxies, 5)
 	err := OutPaintDirByPool(pool, dirPath)
 	if err != nil {
@@ -42,31 +51,10 @@ func TestOutPaintDirWithPoolCharles(t *testing.T) {
 		return
 	}
 }
-func TestOutPaintDirWithPool(t *testing.T) {
-	dirPath := "/Users/parapeng/Downloads/pinterest"
-	proxies := []string{"http://127.0.0.1:8888"}
-	for i := 0; i < 6; i++ {
-		proxies = append(proxies, fmt.Sprintf("http://127.0.0.1:%d", i+7000))
-	}
-	pool := NewClientPool(proxies, 1)
-	err := OutPaintDirByPool(pool, dirPath)
-	if err != nil {
-		log.Printf("%v\n", err)
-		return
-	}
-}
-func TestUpscalerFile(t *testing.T) {
-	files := filterFile("/Users/parapeng/Downloads/wait/outpaint")
-	client := NewProxyClientByUrl("http://127.0.0.1:8888")
-	newFiles := files[:1]
-	err := UpscalerFiles(client, newFiles)
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
-}
+
 func TestUpscalerFilesByPool(t *testing.T) {
-	files := filterFile("/Users/parapeng/Downloads/wait/outpaint")
-	proxies := []string{"http://127.0.0.1:8888"}
+	files := filterFile("/Users/parapeng/Downloads/outpaint")
+	proxies := []string{"http://127.0.0.1:7897"}
 	pool := NewClientPool(proxies, 5)
 	err := UpscalerFilesByPool(pool, files)
 	if err != nil {
