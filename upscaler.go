@@ -19,9 +19,9 @@ type UpscalerResp struct {
 
 const UPSCALER_APIURL = "https://api2.pixelcut.app/image/upscale/v1"
 
-func UpscalerFiles(client *http.Client, files []string) error {
+func UpscaleFiles(client *http.Client, files []string) error {
 	for _, filePath := range files {
-		err := UpscalerFile(client, filePath)
+		err := UpscaleFile(client, filePath)
 		if err != nil {
 			//dont return error, just log it
 			log.Printf("error: %v", err)
@@ -32,7 +32,7 @@ func UpscalerFiles(client *http.Client, files []string) error {
 	}
 	return nil
 }
-func UpscalerFilesByPool(clientPool *ClientPool, files []string) error {
+func UpscaleFilesByPool(clientPool *ClientPool, files []string) error {
 	var wg sync.WaitGroup
 	for _, filePath := range files {
 		wg.Add(1)
@@ -42,7 +42,7 @@ func UpscalerFilesByPool(clientPool *ClientPool, files []string) error {
 			urlInfo := clientPool.GetURL(client)
 			log.Printf("start:%s,by clinet:%v", filepath.Base(filePath), urlInfo)
 			defer clientPool.Put(client)
-			err := UpscalerFile(client, filePath)
+			err := UpscaleFile(client, filePath)
 			if err != nil {
 				//dont return error, just log it
 				log.Printf("error: %v,by clinet:%v", err, urlInfo)
@@ -54,11 +54,11 @@ func UpscalerFilesByPool(clientPool *ClientPool, files []string) error {
 	wg.Wait()
 	return nil
 }
-func UpscalerFile(client *http.Client, filePath string) error {
-	return UpscalerPostData(client, filePath)
+func UpscaleFile(client *http.Client, filePath string) error {
+	return UpscalePostData(client, filePath)
 }
 
-func UpscalerPostData(client *http.Client, filePath string) error {
+func UpscalePostData(client *http.Client, filePath string) error {
 	// 创建一个新的缓冲区和 multipart writer
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)

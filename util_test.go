@@ -32,10 +32,10 @@ func TestOutPaintDir(t *testing.T) {
 	}
 }
 func TestUpscalerFile(t *testing.T) {
-	files := filterFile("/Users/parapeng/Downloads/outpaint")
+	files := FilterFile("/Users/parapeng/Downloads/outpaint", 2000, 1000)
 	client := NewProxyClientByUrl("http://127.0.0.1:7897")
 	newFiles := files[:1]
-	err := UpscalerFiles(client, newFiles)
+	err := UpscaleFiles(client, newFiles)
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
@@ -52,11 +52,11 @@ func TestOutPaintDirWithPool(t *testing.T) {
 	}
 }
 
-func TestUpscalerFilesByPool(t *testing.T) {
-	files := filterFile("/Users/parapeng/Downloads/outpaint")
+func TestUpscaleFilesByPool(t *testing.T) {
+	files := FilterFile("/Users/parapeng/Downloads/outpaint", 2000, 1000)
 	proxies := []string{"http://127.0.0.1:7897"}
 	pool := NewClientPool(proxies, 5)
-	err := UpscalerFilesByPool(pool, files)
+	err := UpscaleFilesByPool(pool, files)
 	if err != nil {
 		log.Printf("%v\n", err)
 	}

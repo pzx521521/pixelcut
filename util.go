@@ -155,7 +155,7 @@ func CopyFile(src, dst string) error {
 
 	return nil
 }
-func filterFile(dirPath string) []string {
+func FilterFile(dirPath string, maxWidth, maxHeight int) []string {
 	files, _ := GetAllFilesByExts(dirPath, []string{".jpg", ".jpeg"})
 	ret := []string{}
 	for _, file := range files {
@@ -163,7 +163,7 @@ func filterFile(dirPath string) []string {
 		if err != nil {
 			continue
 		}
-		if config.Width < 2000 && config.Height < 1000 {
+		if config.Width < maxWidth && config.Height < maxHeight {
 			ret = append(ret, file)
 		}
 	}
