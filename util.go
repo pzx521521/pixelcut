@@ -98,6 +98,10 @@ func ChangePng2Jpg(dirPth string) error {
 		if err != nil {
 			return err
 		}
+		err = os.Remove(file)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
