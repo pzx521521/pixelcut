@@ -80,7 +80,7 @@ func OutPaintDirByPool(clientPool *ClientPool, dirPath string) error {
 			err = OutPaintFile(client, filePath, savePath)
 			if err != nil {
 				//dont return error, just log it
-				log.Printf("error: %v,by clinet:%v", err, urlInfo)
+				log.Printf("error: %v,by clinet:%v, file:%v", err, urlInfo, filepath.Base(filePath))
 			} else {
 				log.Printf("save success at:%s,by clinet:%v", savePath, urlInfo)
 
@@ -98,13 +98,18 @@ func OutPaintFile(client *http.Client, filePath, savePath string) error {
 	}
 	return nil
 }
+func maxPaint(nums ...*int) {
+	for _, num := range nums {
+		if *num > 2000 {
+			*num = 2000
+		}
+	}
+}
 func OutPaintPostData(client *http.Client, filePath, savePath string, left, top, right, bottom int, creativity float64) error {
 	if top+left+right+bottom == 0 {
 		return errors.New("top = left = 0")
 	}
-	if left > 2000 || right > 2000 || bottom > 2000 || top > 2000 {
-		return errors.New("Pixel value must be within an inclusive range of 0 and 2000")
-	}
+	maxPaint(&left, &top, &right, &bottom)
 	// 创建一个新的缓冲区和 multipart writer
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)

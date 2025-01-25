@@ -18,6 +18,7 @@ func GetIP(pool *ClientPool) error {
 	resp, err := client.Get("https://directory.cookieyes.com/api/v1/ip")
 	if err != nil {
 		log.Printf("%v", err)
+		return err
 	}
 	//模拟长连接
 	time.Sleep(1 * time.Second)
@@ -29,10 +30,27 @@ func GetIP(pool *ClientPool) error {
 	log.Printf("resp.Body: %s", body)
 	return nil
 }
-func TestPoolHttp(t *testing.T) {
+func TestPoolHttpByBalance(t *testing.T) {
 	proxies := []string{"http://127.0.0.1:8888"}
 	var wg sync.WaitGroup
 	pool := NewClientPool(proxies, 5)
+	for i := 0; i < 20; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			err := GetIP(pool)
+			if err != nil {
+				log.Printf("err:%v", err)
+				return
+			}
+		}()
+	}
+	wg.Wait()
+}
+func TestPoolHttpByLinxDo(t *testing.T) {
+	proxies := []string{"https://api-proxy.me/anthropic"}
+	var wg sync.WaitGroup
+	pool := NewClientPool(proxies, 1)
 	for i := 0; i < 20; i++ {
 		wg.Add(1)
 		go func() {
